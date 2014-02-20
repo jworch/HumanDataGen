@@ -1,0 +1,96 @@
+
+THIS IS SOME OUTPUT AFTER CORRECTING THE ERRORS CAUSED BY THE SCANNER IN NodeStatus_sp in the getSubTreeFiles
+I CHANGED THE * BY A + SIGN (CHECK THE TODO IN THAT CLASS)
+
+
+1.
+--------------------------------------------------------------------------------------------------------------------
+##############
+ Splitting in mem correctseqfile/0/0/0/0/0/0/0/1/0
+ with 11levels remaining
+####
+
+Deleted correctseqfile/0/0/0/0/0/0/0/1/0/temp
+STRANGE OR NOT? I STILL NEED TO DIG MORE INTO THAT PART OF THE CODE..
+Deleted wrongly developped subtree :hdfs://pma-robot-cutting:54310/user/hadoop/correctseqfile/0/0/0/0/0/0/0/1/0/subtree_11.seq
+
+node 514 at depth 9 has status 
+SPLIT
+node 527 at depth 9 has status 
+SPLIT
+correctseqfile/0/0/0/0/1/0/0/0/1/splitbuffs.seq IS NOW A FOLDER
+correctseqfile/0/0/0/0/1/0/0/0/1has input of lenth 40871KB
+LOOKING IN NODEPATH: correctseqfile/0/0/0/0/1/0/0/0/1
+node 528 at depth 9 has status 
+TO_SPLIT_AS_SUBTREE
+
+
+I still don't know why the program deleted some subtree_xx.seq files, but I guess this is not that important. When running the program for the first time on new input data this will not happen of course since then there haven't been created any subtree_xx files.
+
+
+
+2.
+--------------------------------------------------------------------------------------------------------------------
+STRANGE THAT NODES AT DEPTH 20 CANNOT BE SPLIT IN MEM, OR CAN IT BE NORMAL?
+
+correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/1/0has input of lenth 55KB
+LOOKING IN NODEPATH: correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/1/0
+node 1880845 at depth 20 has status 
+TO_SPLIT_AS_SUBTREE
+
+correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/1/1has input of lenth 187394KB
+node 1880846 at depth 20 has status 
+TO_SPLIT
+
+Rootpath SplitNode = correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/1/1
+correctseqfile/1/1/0/1/0/0/0/1/1/1/1/0/1/0/1/0/1/1/1/0/splitbuffs.seq IS NOW A FOLDER
+correctseqfile/1/1/0/1/0/0/0/1/1/1/1/0/1/0/1/0/1/1/1/0has input of lenth 189488KB
+node 1908397 at depth 20 has status 
+TO_SPLIT
+
+
+4.
+-----------------------------------------------------------------------------------------------------------------------
+THEN THERE IS AN ERROR
+
+node 77 at depth 6 has status 
+SPLIT
+node 78 at depth 6 has status 
+SPLIT
+correctseqfile/0/1/0/0/0/0/splitbuffs.seq IS NOW A FOLDER
+correctseqfile/0/1/0/0/0/0has input of lenth 47126KB
+LOOKING IN NODEPATH: correctseqfile/0/1/0/0/0/0
+node 79 at depth 6 has status 
+TO_SPLIT_AS_SUBTREE
+HadoopTree.TTrain.Exception_TTrain: (E) at node correctseqfile/0/1/0/0/0/0: 
+should be split before we run collectTree
+	at HadoopTree.TTrain.TreeTrainer_sp.collectTree(TreeTrainer_sp.java:538)
+
+	if lines are no longer up to date:
+	case TO_SPLIT : {
+		throw new Exception_TTrain(nodePath, "should be split before we run collectTree");
+        }
+
+	at HadoopTree.apps.MainTrainTree.run(MainTrainTree.java:45)
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:69)
+	at HadoopTree.apps.MainTrainTree.main(MainTrainTree.java:23)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.ProgramDriver$ProgramDescription.invoke(ProgramDriver.java:72)
+	at org.apache.hadoop.util.ProgramDriver.driver(ProgramDriver.java:144)
+	at HadoopTree.apps.Driver.main(Driver.java:36)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:192)
+
+real	40m24.171s
+user	4m38.473s
+sys	0m21.821s
+
+SOLVED: there were still problems with the Parser in the getSubTreeFiles() method in the NodeStatus_sp class, but these problems are now normally solved
+
+

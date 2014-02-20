@@ -1,0 +1,16 @@
+<launch>
+    <param name="use_sim_time" value="false"/>
+
+    <!-- The camera nodes -->
+    <include file="$(find openni_camera)/launch/openni_node.launch" />
+
+    <!-- The processing node -->
+<!--
+    <node name="TLive_node" pkg="TLive_node" type="TLive_node" args="-numTrees 3 -tree0 ~/data/results/forest1/tree_20.txt -tree1 ~/data/results/forest2/tree_20.txt -tree2 ~/data/results/forest3/tree_20.txt -tree3 ~/data/results/forest3/tree_20.txt -mask 1 -FG 1" output="screen" >
+    </node>
+-->
+    <node name="rviz" pkg="rviz" type="rviz" output="screen" >
+    </node>
+</launch>
+
+

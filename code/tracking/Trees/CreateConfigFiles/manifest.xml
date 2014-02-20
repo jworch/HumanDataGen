@@ -1,0 +1,17 @@
+<package>
+  <description brief="CreateConfigFiles">
+
+     CreateConfigFiles
+
+  </description>
+  <author>Cedric</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/CreateConfigFiles</url>
+  <depend package="roscpp"/>
+  <depend package="commonTrees"/>
+  <depend package="opencv2"/>
+
+</package>
+
+

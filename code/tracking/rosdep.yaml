@@ -1,0 +1,8 @@
+ant:
+  ubuntu:
+    lucid:
+      apt:
+        packages: [ ant ]
+    oneiric:
+      apt:
+        packages: [ ant ]

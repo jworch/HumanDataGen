@@ -1,0 +1,17 @@
+<package>
+  <description brief="createSamples">
+
+     createSamples
+
+  </description>
+  <author>Koen Buys</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/createSamples</url>
+  <depend package="opencv2"/>
+  <depend package="roscpp"/>
+  <depend package="commonTrees"/>
+
+</package>
+
+

@@ -1,0 +1,14 @@
+<package>
+  <description brief="HadoopTree">
+
+     HadoopTree
+
+  </description>
+  <author>Koen Buys</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/HadoopTree</url>
+  <rosdep name="ant" />
+</package>
+
+

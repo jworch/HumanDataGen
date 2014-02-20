@@ -1,0 +1,91 @@
+
+The MakeHuman part moved to :
+
+https://github.com/KoenBuys/makehuman_datagen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This version of the plugin is compatible with the stable alpha 7.
+The mhtrunk branch, contains a version of the plugin compatible with the latest 
+pure-python, Qt based version of MakeHuman.
+
+Requirements
+------------
+Makehuman 1.0 Alpha 7 (r3793) or the Alpha 7 redistributable
+numpy
+
+
+Installation
+------------
+
+Install a recent MakeHuman trunk version (Alpha 8)
+Put contents of data/ in $HOME_FOLDER/makehuman/data/
+Put contents of plugins/ in $MAKEHUMAN_INSTALL_PATH/plugins/
+Put contents of shared/ in $MAKEHUMAN_INSTALL_PATH/shared/
+You will have to overwrite the shared/bvh_importer.py that comes with MH. 
+
+
+Usage
+-----
+
+Run makehuman
+Model a human
+Select the "People Export" tab
+Click "Load rig" to load MHX rig and sample BVH file
+Check option "Show images"
+Click the "Export images" button to render images
+
+
+NOTE: this is an early work in progress
+
+
+Standalone test version
+-----------------------
+
+The standalone folder contains a version of the plugin that starts without
+makehuman. This is easy for quick testing of features.
+To run, run "python standalone.py" from the standalone folder.

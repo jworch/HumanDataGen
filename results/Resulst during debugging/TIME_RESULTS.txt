@@ -1,0 +1,237 @@
+
+With the correct input data (the splitbuff.dat file of around 20GB)
+
+1.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+upload_sp: $time hadoop jar HadoopTree.jar HadoopTree.apps.Driver upload_sp /data2/correctData/splitbuffs.dat correctseqfile/splitbuffs.seq
+this took 2 hours to run
+
+2.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+trainTree: $time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 restrain localfiles
+this took 12 hours to run. It was the first run so the splitting of the samples needed to be done and this is time comsuming. In consecutive runs the program will notice that most of the nodes are already split and the SplitSample jobs won't be launched anymore.
+BUT still an error in the MainTrainTree program:
+
+java.lang.NumberFormatException: For input string: ""
+	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+	at java.lang.Integer.parseInt(Integer.java:504)
+	at java.lang.Integer.parseInt(Integer.java:527)
+	at HadoopTree.TTrain.NodeStatus_sp.getSubTreeFiles(NodeStatus_sp.java:157)
+	at HadoopTree.TTrain.NodeStatus_sp.getNodeStatus(NodeStatus_sp.java:55)
+	at HadoopTree.TTrain.TreeTrainer_sp.collectTree(TreeTrainer_sp.java:527)
+	at HadoopTree.apps.MainTrainTree.run(MainTrainTree.java:45)
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:69)
+	at HadoopTree.apps.MainTrainTree.main(MainTrainTree.java:23)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.ProgramDriver$ProgramDescription.invoke(ProgramDriver.java:72)
+	at org.apache.hadoop.util.ProgramDriver.driver(ProgramDriver.java:144)
+	at HadoopTree.apps.Driver.main(Driver.java:36)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:192)
+
+--> it looks like a problem with the scanner (as may be expected)
+this is now solved (see 3.)
+
+3.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+trainTree: $time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 restrain localfiles
+solved the Scanner problem (+ sign instead of *)
+this took 40 minutes, but errors (see 4. in the file 'some output from InMemSplit.txt')
+
+
+4.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+uploadreduced_sp: $time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree reduceddata 20 restrainreduced localfiles
+
+5.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 resultcorrecttrain
+(notice that there is an argument less required)
+
+everything should have been correct right now (output had already been generated before, and the training was started from zero on), but still an error. The time it took with 20GB data was 14.5 hours, in this time the samples were split on disk and in memory, but collectree() still gave an error (probably because of the parser).
+
+in COLLECTTREE: node 77 at depth 6 has status 
+SPLIT
+in COLLECTTREE: node 78 at depth 6 has status 
+SPLIT
+NAME hdfs://pma-robot-cutting:54310/user/hadoop/correctseqfile/0/1/0/0/0/0/splitbuffs.seq
+NAME hdfs://pma-robot-cutting:54310/user/hadoop/correctseqfile/0/1/0/0/0/0/subtree_14.seq
+NAME hdfs://pma-robot-cutting:54310/user/hadoop/correctseqfile/0/1/0/0/0/0/temp
+java.lang.NumberFormatException: null
+	at java.lang.Integer.parseInt(Integer.java:454)
+	at java.lang.Integer.parseInt(Integer.java:527)
+	at HadoopTree.TTrain.NodeStatus_sp.getSubTreeFiles(NodeStatus_sp.java:177)
+	at HadoopTree.TTrain.NodeStatus_sp.getNodeStatus(NodeStatus_sp.java:57)
+	at HadoopTree.TTrain.TreeTrainer_sp.collectTree(TreeTrainer_sp.java:607)
+	at HadoopTree.apps.MainTrainTree.run(MainTrainTree.java:63)
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:69)
+	at HadoopTree.apps.MainTrainTree.main(MainTrainTree.java:25)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.ProgramDriver$ProgramDescription.invoke(ProgramDriver.java:72)
+	at org.apache.hadoop.util.ProgramDriver.driver(ProgramDriver.java:144)
+	at HadoopTree.apps.Driver.main(Driver.java:39)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:192)
+
+real	874m14.568s --> 14.5 hours
+user	22m38.257s
+sys	1m40.114s
+
+SOLVED: there was still a problem with the Parser, now because of the dot '.'
+
+6.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 resultcorrecttrain
+
+Hopefully last problem with the parser solved (see the code for details), but now there is a memory problem..
+And this is with 20GB of data..
+
+Printed the tree to resultcorrecttrain/tree_17.txt
+(HACK) still accepting attribIds  that are -1
+Printed the tree to resultcorrecttrain/tree_18.txt
+java.lang.OutOfMemoryError: Java heap space
+	at HadoopTree.HistogramPair.<init>(HistogramPair.java:24)
+	at HadoopTree.SplitInfo.<init>(Unknown Source)
+	at HadoopTree.Tree.<init>(Tree.java:40)
+	at HadoopTree.Tree.getSubTree(Tree.java:84)
+	at HadoopTree.apps.MainTrainTree.run(MainTrainTree.java:78)
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:69)
+	at HadoopTree.apps.MainTrainTree.main(MainTrainTree.java:25)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.ProgramDriver$ProgramDescription.invoke(ProgramDriver.java:72)
+	at org.apache.hadoop.util.ProgramDriver.driver(ProgramDriver.java:144)
+	at HadoopTree.apps.Driver.main(Driver.java:39)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:192)
+
+real	4m52.246s
+user	15m41.631s
+sys	0m9.353s
+
+First attempt for a solution: Hadoop book page 270: give an extra argument to increase the memory allocated for the JVM on the name node only (this did not work, however)
+It is on the namenode that there is a memory error since the TrainTree program runs on the namenode (maybe it is better to start the probram on another machine??)
+The solution that worked was to givel all the nodes in the cluster more Java Heap space memory. This was done in the file /hadoop/hadoop0.21.0/conf/hadoop-env.sh (on the namenode 'pma-robot-cutting) by changing the variable HADOOP_HEAPSIZE to 2000 (instead of 1000 by default)
+
+
+
+6.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 resultcorrecttrain
+
+Another error, but the program does not terminate.. So I think that the hadoop program will read that block from another location, and that this error may be neglected.
+
+12/09/04 12:10:08 INFO hdfs.DFSClient: Failed to connect to /192.168.10.217:50010, add to deadNodes and continue
+java.io.IOException: Got error for OP_READ_BLOCK, self=/192.168.10.217:33971, remote=/192.168.10.217:50010, for file /user/hadoop/correctseqfile/1/1/0/0/0/1/0/0/0/0/1/0/1/0/1/1/0/0/1/subtree_1.seq, for block -8551139063475471799_71988
+	at org.apache.hadoop.hdfs.BlockReader.newBlockReader(BlockReader.java:406)
+	at org.apache.hadoop.hdfs.DFSInputStream.blockSeekTo(DFSInputStream.java:378)
+	at org.apache.hadoop.hdfs.DFSInputStream.read(DFSInputStream.java:514)
+	at java.io.DataInputStream.readFully(DataInputStream.java:195)
+	at java.io.DataInputStream.readFully(DataInputStream.java:169)
+	at org.apache.hadoop.io.SequenceFile$Reader.init(SequenceFile.java:1518)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1483)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1451)
+	at org.apache.hadoop.io.SequenceFile$Reader.<init>(SequenceFile.java:1432)
+	at HadoopTree.TTrain.TreeTrainer_sp.readTree(TreeTrainer_sp.java:151)
+	at HadoopTree.TTrain.TreeTrainer_sp.collectTree(TreeTrainer_sp.java:638)
+	at HadoopTree.apps.MainTrainTree.run(MainTrainTree.java:64)
+	at org.apache.hadoop.util.ToolRunner.run(ToolRunner.java:69)
+	at HadoopTree.apps.MainTrainTree.main(MainTrainTree.java:26)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.ProgramDriver$ProgramDescription.invoke(ProgramDriver.java:72)
+	at org.apache.hadoop.util.ProgramDriver.driver(ProgramDriver.java:144)
+	at HadoopTree.apps.Driver.main(Driver.java:39)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.hadoop.util.RunJar.main(RunJar.java:192)
+LOOKING IN NODEPATH: correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/0
+NAME hdfs://pma-robot-cutting:54310/user/hadoop/correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/0/splitbuffs.seq
+NAME hdfs://pma-robot-cutting:54310/user/hadoop/correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/0/subtree_1.seq
+correctseqfile/1/1/0/0/1/0/1/1/0/0/1/1/0/0/0/0/1/1/0/subtree_[0-9]*.seq
+NUMASSTRINGSEQ: 1.seq
+GETSUBTREEFILES FOUND: 1
+in COLLECTTREE: node 940421 at depth 19 has status 
+SPLIT_AS_SUBTREE
+in COLLECTTREE: node 940422 at depth 19 has status 
+SPLIT
+LOOKING IN NODEPATH: correctseqfile/1/1/0/1/0/0/0/1/1/1/1/0/1/0/1/0/1/1/0
+
+
+7.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 resultcorrecttrain
+
+
+
+(HACK) still accepting attribIds  that are -1
+Printed the tree to resultcorrecttrain/tree_17.txt
+
+
+ Runtime memory info
+free memory: 586MB
+allocated memory: 1,341MB
+max memory: 1,777MB
+total free memory: 1,022MB
+
+(HACK) still accepting attribIds  that are -1
+Printed the tree to resultcorrecttrain/tree_18.txt
+
+
+ Runtime memory info
+free memory: 533MB
+allocated memory: 1,343MB
+max memory: 1,777MB
+total free memory: 968MB
+
+(HACK) still accepting attribIds  that are -1
+Printed the tree to resultcorrecttrain/tree_19.txt
+
+real	5m48.685s
+user	1m31.414s
+sys	0m6.284s
+
+After giving more memory there were no more errors..
+
+
+8.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 resultcorrecttrain
+
+A total run with the 20GB input data. No more errors after increasing the Java Heap Space to 2GB (instead of the default of 1GB)
+There may, however, still be a problem with samples on the lowest level that are split on disk. This means that there are still a lot of samples together (and thus creating a large sequence file) while it is expected that at the lower levels there are few samples per node since there already have been a lot of splits. This may indicate that at certain nodes the data is not equally split..
+
+Runtime memory info
+free memory: 132MB
+allocated memory: 904MB
+max memory: 1,777MB
+total free memory: 1,005MB
+
+(HACK) still accepting attribIds  that are -1
+Printed the tree to resultcorrecttrain2ndattempt/tree_19.txt
+
+real	751m58.853s  --> 12.5 hours
+user	21m35.617s
+sys	1m27.397s
+

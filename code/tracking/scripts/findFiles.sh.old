@@ -1,0 +1,3 @@
+#!/bin/bash
+
+find /home/cedric/cmumocap/ | grep bvh > /home/kbuys/data/training_human_detection/train28112011/BVHList.txt

@@ -1,0 +1,27 @@
+<package>
+  <description brief="libLabelSkel">
+
+     libLabelSkel: segments blobs for a skeleton algorithm and search for skeletons
+
+  </description>
+  <author>Koen Buys, Cedric Cagniart</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/libLabelSkel</url>
+
+  <depend package="roscpp"/>
+  <depend package="opencv2"/>
+  <depend package="pcl"/>
+  <depend package="pcl_ros"/>
+  <depend package="sensor_msgs"/>
+  <depend package="image_geometry"/>
+  <depend package="visualization_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="eigen"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -lLabelSkel"/>
+  </export>
+</package>
+
+

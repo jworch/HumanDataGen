@@ -1,0 +1,15 @@
+<package>
+  <description brief="BVHDBSparsify">
+     BVHDBSparsify
+  </description>
+  <author>Cedric Cagniart</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/BVHDBSparsify</url>
+  <depend package="roscpp"/>
+  <depend package="opencv2"/>
+  <depend package="libBVH"/>
+
+</package>
+
+

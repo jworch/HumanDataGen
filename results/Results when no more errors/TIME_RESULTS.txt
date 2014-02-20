@@ -1,0 +1,20 @@
+
+1.
+-------------------------------------------------------------------------------------------------------------------------------------------------
+time hadoop jar HadoopTree.jar HadoopTree.apps.Driver trainTree correctseqfile 20 resultcorrecttrain
+
+A total run with the 20GB input data. No more errors after increasing the Java Heap Space to 2GB (instead of the default of 1GB)
+There may, however, still be a problem with samples on the lowest level that are split on disk. This means that there are still a lot of samples together (and thus creating a large sequence file) while it is expected that at the lower levels there are few samples per node since there already have been a lot of splits. This may indicate that at certain nodes the data is not equally split..
+
+Runtime memory info
+free memory: 132MB
+allocated memory: 904MB
+max memory: 1,777MB
+total free memory: 1,005MB
+
+(HACK) still accepting attribIds  that are -1
+Printed the tree to resultcorrecttrain2ndattempt/tree_19.txt
+
+real	751m58.853s  --> 12.5 hours
+user	21m35.617s
+sys	1m27.397s

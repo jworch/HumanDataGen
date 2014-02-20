@@ -1,0 +1,19 @@
+<package>
+  <description brief="commonTrees">
+
+     commonTrees
+
+  </description>
+  <author>Koen Buys</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/commonTrees</url>
+  <depend package="roscpp"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include"/>
+  </export>
+
+</package>
+
+

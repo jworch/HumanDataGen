@@ -1,0 +1,10 @@
+<stack>
+  <description brief="human_tracking">human_tracking</description>
+  <author>Maintained by Koen Buys</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/human_tracking</url>
+  <depend stack="ros" />
+  <depend stack="vision_opencv" />
+
+</stack>

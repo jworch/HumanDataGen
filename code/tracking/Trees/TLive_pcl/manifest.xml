@@ -1,0 +1,28 @@
+<package>
+  <description brief="TLive_pcl">
+
+     TLive_pcl: this wraps the code in a ROS node, overlayed with the perception_pcl_unstable
+
+  </description>
+  <author>Koen Buys</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/TLive_pcl</url>
+  <depend package="commonTrees"/>
+  <depend package="libTreeLive"/>
+  <depend package="opencv2"/>
+  <depend package="roscpp"/>
+  <depend package="stereo_msgs"/>
+  <depend package="sensor_msgs"/>
+  <depend package="image_transport"/>
+  <depend package="cv_bridge"/>
+  <depend package="libLabelSkel"/>
+  <depend package="message_filters"/>
+  <depend package="visualization_msgs"/>
+  <depend package="pcl_ros"/>
+  <depend package="pcl"/>
+  <depend package="rosbag"/>
+
+</package>
+
+
