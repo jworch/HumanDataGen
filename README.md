@@ -1,6 +1,6 @@
 HumanDataGen
 ============
-This content of this repository is based on the work of
+ The content of this repository is based on the work of
 
   * Koen Buys,
   
