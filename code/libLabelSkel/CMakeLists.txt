@@ -1,4 +1,15 @@
 cmake_minimum_required(VERSION 2.4.6)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+
+
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+find_package(Eigen REQUIRED)
+
+include_directories(libBVH/include BVHDBSparsify/include BVHtoRGBD/include ${EIGEN_INCLUDE_DIRS})
+
+
 include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 
 # Set the build type.  Options are:
@@ -28,6 +39,7 @@ set(SRC src/segment.cpp
 
 #common commands for building c++ executables and libraries
 rosbuild_add_library(LabelSkel ${SRC})
+target_link_libraries(LabelSkel ${PCL_LIBRARIES})
 #rosbuild_add_compile_flags(LabelSkel -g -O0)
 #target_link_libraries(${PROJECT_NAME} another_library)
 #rosbuild_add_boost_directories()
